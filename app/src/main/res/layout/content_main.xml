@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:background="#ffffff"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        tools:context="com.example.witek.organizer.MainActivity"
+        tools:showIn="@layout/app_bar_main"
+        android:clipToPadding="false">
+
+<!--<RelativeLayout-->
+    <!--android:id="@+id/calendarLayout"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="#ffffff"-->
+    <!--android:elevation="10dp">-->
+    <!--<com.prolificinteractive.materialcalendarview.MaterialCalendarView-->
+        <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+        <!--android:id="@+id/calendarView"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:mcv_showOtherDates="defaults"-->
+        <!--app:mcv_selectionColor="@color/colorAccent"-->
+        <!--app:mcv_calendarMode="month"-->
+        <!--app:mcv_tileHeight="40dp"-->
+        <!--app:mcv_tileWidth="50dp"-->
+        <!--/>-->
+<!--</RelativeLayout>-->
+    <CalendarView
+            android:paddingTop="2dp"
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:elevation="5dp"
+            android:background="#ffffff"
+        android:layout_alignTop="@+id/menu_red"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"></CalendarView>
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/calendarView"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+            <include layout="@layout/limit_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/include"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/main_recycler"></android.support.v7.widget.RecyclerView>
+        </LinearLayout>
+
+        <com.github.clans.fab.FloatingActionMenu
+            android:id="@+id/menu_red"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="10dp"
+            fab:menu_labels_ellipsize="end"
+            fab:menu_labels_singleLine="true"
+            fab:menu_backgroundColor="#ccffffff"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_event_activity"
+                fab:fab_size="mini"
+                fab:fab_label="Event Activity"
+                fab:menu_backgroundColor="#ffffffff"/>
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_eat"
+                fab:fab_size="mini"
+                fab:fab_label="Food Activity"
+                fab:menu_backgroundColor="#ffffffff"/>
+
+        </com.github.clans.fab.FloatingActionMenu>
+    </RelativeLayout>
