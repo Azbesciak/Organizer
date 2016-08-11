@@ -27,6 +27,7 @@ import com.innodroid.expandablerecycler.ExpandableRecyclerAdapter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity
     private EventsAdapter eventsAdapter;
     private RecyclerView recycler;
     static MainActivityAdapter adapter;
-    static Map<String,Boolean> isChagnedMap = new HashMap();
+    static Map<String, Boolean> isChagnedMap = new HashMap<>();
     private SimpleDateFormat dateFormat;
     private SimpleDateFormat timeFormat;
     private Date currentDayDate;
@@ -70,7 +71,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
     private void initializeNavigationDrawer() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -80,8 +80,10 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
         navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        headerView = navigationView.getHeaderView(0);
+        if (navigationView != null) {
+            navigationView.setNavigationItemSelectedListener(this);
+            headerView = navigationView.getHeaderView(0);
+        }
 
         //editText at navigation drawer top with actual variable
         reachedKcalToday = (EditText) headerView.findViewById(R.id.reachedKcalToday);
@@ -107,7 +109,7 @@ public class MainActivity extends AppCompatActivity
                         displayFab(handler);
                         break;
                     case RecyclerView.SCROLL_STATE_DRAGGING: {
-                        if(!menuRed.isMenuButtonHidden()) {
+                        if (!menuRed.isMenuButtonHidden()) {
                             menuRed.hideMenuButton(true);
                         }
                         break;
@@ -119,12 +121,13 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
+
     private void initializeDate() {
-        dateFormat = new SimpleDateFormat("E, dd MMMM yyyy");
-        timeFormat = new SimpleDateFormat("HH:mm");
+        dateFormat = new SimpleDateFormat("E, dd MMMM yyyy", Locale.getDefault());
+        timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
         currentDayDate = new Date();
-        selectedDate = dateFormat.format( new Date());
-        currentDay = dateFormat.format( new Date());
+        selectedDate = dateFormat.format(new Date());
+        currentDay = dateFormat.format(new Date());
     }
 
     private void initializeFab() {
@@ -132,9 +135,11 @@ public class MainActivity extends AppCompatActivity
         fab2 = (FloatingActionButton) findViewById(R.id.fab2);
 
         menuRed = (FloatingActionMenu) findViewById(R.id.menu_red);
-        menuRed.hideMenuButton(false);
+        if (menuRed != null) {
+            menuRed.hideMenuButton(false);
+            menuRed.setClosedOnTouchOutside(true);
+        }
 
-        menuRed.setClosedOnTouchOutside(true);
         final int delay = 400;
         mUiHandler.postDelayed(new Runnable() {
             @Override
@@ -152,12 +157,12 @@ public class MainActivity extends AppCompatActivity
         fab2.setOnClickListener(clickListener);
     }
 
-    private void displayFab (final Handler handler) {
-        if(menuRed.isMenuButtonHidden()) {
+    private void displayFab(final Handler handler) {
+        if (menuRed.isMenuButtonHidden()) {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if(menuRed.isMenuButtonHidden() && recyclerViewState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (menuRed.isMenuButtonHidden() && recyclerViewState == RecyclerView.SCROLL_STATE_IDLE) {
                         menuRed.showMenuButton(true);
                     } else {
                         displayFab(handler);
@@ -167,17 +172,18 @@ public class MainActivity extends AppCompatActivity
         }
 
     }
+
     private void initializeCalendarWidget() {
         calendarView = (CalendarView) findViewById(R.id.calendarView);
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
 
             @Override
             public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
-                adapter.saveSelectedLimit(selectedDate,adapter.selectedDayKcalLimitValue.getText().toString());
-                Date dateTemp = new Date(year-1900,month,dayOfMonth);
+                adapter.saveSelectedLimit(selectedDate, adapter.selectedDayKcalLimitValue.getText().toString());
+                Date dateTemp = new Date(year - 1900, month, dayOfMonth);
                 selectedDate = dateFormat.format(dateTemp);
                 updateListViewColor(dateTemp);
-                Snackbar.make(view,"Wybrano date : " + selectedDate, Snackbar.LENGTH_SHORT)
+                Snackbar.make(view, "Wybrano date : " + selectedDate, Snackbar.LENGTH_SHORT)
                         .setAction("Action", null).show();
                 adapter.updateRecycler(selectedDate);
 
@@ -186,24 +192,22 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
+
     private View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-                case R.id.fab1:{
+                case R.id.fab1: {
                     Intent intent = new Intent(v.getContext(), AddActivityFormEvent.class);
-                    if(selectedDate == null) {
 
-                    }
-
-                    intent.putExtra("date",selectedDate);
+                    intent.putExtra("date", selectedDate);
                     intent.putExtra("time", timeFormat.format(System.currentTimeMillis()));
                     startActivity(intent);
                     break;
                 }
                 case R.id.fab2: {
-                    Intent intent = new Intent(v.getContext(),AddFoodFormEvent.class);
-                    intent.putExtra("date",selectedDate);
+                    Intent intent = new Intent(v.getContext(), AddFoodFormEvent.class);
+                    intent.putExtra("date", selectedDate);
                     intent.putExtra("time", timeFormat.format(System.currentTimeMillis()));
                     startActivity(intent);
                     break;
@@ -219,13 +223,15 @@ public class MainActivity extends AppCompatActivity
         double reachedKcal = 0;
         try {
             limit = Double.valueOf(dailyBalance.getKcalLimit());
-        }catch (Exception exc) {}
+        } catch (Exception exc) {
+        }
         try {
             reachedKcal = Double.valueOf(dailyBalance.getReachedKcal());
-        }catch (Exception exc) {}
+        } catch (Exception exc) {
+        }
 
-        if(selectedDate.equals(currentDay)) {
-            switch (changeColorMaker(limit,reachedKcal)) {
+        if (selectedDate.equals(currentDay)) {
+            switch (changeColorMaker(limit, reachedKcal)) {
                 case 0: {
                     headerView.setBackgroundResource(R.drawable.default_nav_bar);
                     break;
@@ -255,31 +261,31 @@ public class MainActivity extends AppCompatActivity
                     break;
                 }
             }
-        }else if(currentDayDate.after(dateTemp)) {
-            changeColorMaker(limit,reachedKcal);
-        }else {
+        } else if (currentDayDate.after(dateTemp)) {
+            changeColorMaker(limit, reachedKcal);
+        } else {
             adapter.summaryLabel.setBackgroundColor(getResources().getColor(R.color.cardview_light_background));
 
         }
     }
+
     public int changeColorMaker(double limit, double reached) {
-        if(limit == 0) {
+        if (limit == 0) {
             adapter.summaryLabel.setBackgroundColor(getResources().getColor(R.color.lightGray));
             return 0;
-        }else if(reached <0.8*limit) {
+        } else if (reached < 0.8 * limit) {
             adapter.summaryLabel.setBackgroundColor(getResources().getColor(R.color.lightBlue));
             return 1;
-        }else if(reached <0.95*limit) {
+        } else if (reached < 0.95 * limit) {
             adapter.summaryLabel.setBackgroundColor(getResources().getColor(R.color.lightTeal));
             return 2;
-        }else if(reached <1.05*limit) {
+        } else if (reached < 1.05 * limit) {
             adapter.summaryLabel.setBackgroundColor(getResources().getColor(R.color.lightGreen));
             return 3;
-        }
-        else if(reached <1.2*limit) {
+        } else if (reached < 1.2 * limit) {
             adapter.summaryLabel.setBackgroundColor(getResources().getColor(R.color.lightOrange));
             return 4;
-        }else {
+        } else {
             adapter.summaryLabel.setBackgroundColor(getResources().getColor(R.color.lightRed));
             return 5;
         }
@@ -290,6 +296,7 @@ public class MainActivity extends AppCompatActivity
     public String getSelectedDate() {
         return selectedDate;
     }
+
     public String getCurrentDay() {
         return currentDay;
     }
@@ -297,12 +304,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
-            if(resultCode == Activity.RESULT_OK){
+            if (resultCode == Activity.RESULT_OK) {
                 String result = data.getStringExtra("result");
-                Toast.makeText(getApplicationContext(), "nie dodano " + result + " wartosci",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "nie dodano " + result + " wartosci", Toast.LENGTH_SHORT).show();
             }
             if (resultCode == Activity.RESULT_CANCELED) {
-                Toast.makeText(getApplicationContext(), "cancel",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "cancel", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -310,7 +317,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
+        if (drawer != null && drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
@@ -360,11 +367,50 @@ public class MainActivity extends AppCompatActivity
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        if (drawer != null) {
+            drawer.closeDrawer(GravityCompat.START);
+        }
         return true;
     }
+
     public static void closeFab() {
         menuRed.close(false);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        calendarView.destroyDrawingCache();
+        calendarView = null;
+        selectedDate = null;
+        currentDay = null;
+        menuRed.destroyDrawingCache();
+        menuRed = null;
+        mUiHandler = null;
+        fab1.destroyDrawingCache();
+        fab1 = null;
+        fab2.destroyDrawingCache();
+        fab2 = null;
+        eventsAdapter = null;
+        recycler.destroyDrawingCache();
+        recycler = null;
+        adapter = null;
+        dateFormat = null;
+        timeFormat = null;
+        currentDayDate = null;
+        reachedKcalToday.destroyDrawingCache();
+        reachedKcalToday = null;
+        kcalLimitToday.destroyDrawingCache();
+        kcalLimitToday = null;
+        headerView.destroyDrawingCache();
+        headerView = null;
+
+        toolbar.destroyDrawingCache();
+        toolbar = null;
+        toggle = null;
+        drawer.destroyDrawingCache();
+        drawer = null;
+        navigationView.destroyDrawingCache();
+        navigationView = null;
+    }
 }

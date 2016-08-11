@@ -29,8 +29,9 @@ public class MainActivityAdapter extends ExpandableRecyclerAdapter<MainActivityA
     EditText selectedDayKcalLimitValue;
     EditText selectedActualKcalValue;
 
-    Map<String,List<EventsList>> eventsMap = new TreeMap<>();
-    Map<String,DailyBalance> dailyBalanceMap = new TreeMap<>();
+    Map<String, List<EventsList>> eventsMap = new TreeMap<>();
+    Map<String, DailyBalance> dailyBalanceMap = new TreeMap<>();
+
     public MainActivityAdapter(Context context) {
         super(context);
         mainActivity = (MainActivity) context;
@@ -39,16 +40,9 @@ public class MainActivityAdapter extends ExpandableRecyclerAdapter<MainActivityA
         summaryLabel = (CardView) mainActivity.findViewById(R.id.include);
         selectedActualKcalValue = (EditText) mainActivity.findViewById(R.id.actualKcalValue);
         selectedDayKcalLimitValue = (EditText) mainActivity.findViewById(R.id.selectedDayKcalLimitValue);
-//        selectedDayKcalLimitValue.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View v, boolean hasFocus) {
-//                        if(selectedDayKcalLimitValue.isFocused())
-//                            saveSelectedLimit(mainActivity.getSelectedDate(),String.valueOf(selectedDayKcalLimitValue.getText()));
-//            }
-//        });
         dailyBalanceMap = eventsAdapter.getDailyBalanceList();
         updateRecycler(mainActivity.getSelectedDate());
-        if(dailyBalanceMap.containsKey(mainActivity.getCurrentDay())) {
+        if (dailyBalanceMap.containsKey(mainActivity.getCurrentDay())) {
             selectedDayKcalLimitValue.setText(dailyBalanceMap.get(mainActivity.getCurrentDay()).getKcalLimit());
             selectedActualKcalValue.setText(dailyBalanceMap.get(mainActivity.getCurrentDay()).getReachedKcal());
             mainActivity.kcalLimitToday.setText(dailyBalanceMap.get(mainActivity.getCurrentDay()).getKcalLimit());
@@ -57,14 +51,14 @@ public class MainActivityAdapter extends ExpandableRecyclerAdapter<MainActivityA
         mainActivity.kcalLimitToday.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                saveSelectedLimit(mainActivity.getCurrentDay(),mainActivity.kcalLimitToday.getText().toString());
+                saveSelectedLimit(mainActivity.getCurrentDay(), mainActivity.kcalLimitToday.getText().toString());
             }
         });
     }
 
-        public void updateRecycler(String date) {
-            setItems(updateAdapter(date));
-        }
+    public void updateRecycler(String date) {
+        setItems(updateAdapter(date));
+    }
 
     public static class EventsList extends ExpandableRecyclerAdapter.ListItem {
         private String title;
@@ -126,6 +120,7 @@ public class MainActivityAdapter extends ExpandableRecyclerAdapter<MainActivityA
         TextView name;
         TextView kcalAmount;
         CardView cardView;
+
         public LowerItemViewHolder(View view) {
             super(view);
             name = (TextView) view.findViewById(R.id.item_name);
@@ -137,9 +132,9 @@ public class MainActivityAdapter extends ExpandableRecyclerAdapter<MainActivityA
         public void bind(int position) {
             name.setText(visibleItems.get(position).title);
             kcalAmount.setText(visibleItems.get(position).kcalAmount);
-            if(visibleItems.get(position).getEvent() instanceof ActivityFormEvent) {
+            if (visibleItems.get(position).getEvent() instanceof ActivityFormEvent) {
                 cardView.setCardBackgroundColor(Color.rgb(251, 233, 231));
-            } else if(visibleItems.get(position).getEvent() instanceof FoodFormEvent) {
+            } else if (visibleItems.get(position).getEvent() instanceof FoodFormEvent) {
                 cardView.setCardBackgroundColor(Color.rgb(232, 245, 233));
             }
         }
@@ -148,7 +143,7 @@ public class MainActivityAdapter extends ExpandableRecyclerAdapter<MainActivityA
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
-            case TYPE_HEADER:{
+            case TYPE_HEADER: {
                 return new HeaderViewHolder(inflate(R.layout.item_header, parent));
             }
             case TYPE_PERSON:
@@ -160,7 +155,7 @@ public class MainActivityAdapter extends ExpandableRecyclerAdapter<MainActivityA
     @Override
     public void onBindViewHolder(ExpandableRecyclerAdapter.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
-            case TYPE_HEADER:{
+            case TYPE_HEADER: {
                 ((HeaderViewHolder) holder).bind(position);
                 break;
             }
@@ -170,9 +165,10 @@ public class MainActivityAdapter extends ExpandableRecyclerAdapter<MainActivityA
                 break;
         }
     }
-    public List<EventsList> updateAdapter(String date){
 
-        if((!MainActivity.isChagnedMap.containsKey(date) || MainActivity.isChagnedMap.get(date)) ||
+    public List<EventsList> updateAdapter(String date) {
+
+        if ((!MainActivity.isChagnedMap.containsKey(date) || MainActivity.isChagnedMap.get(date)) ||
                 !eventsMap.containsKey(date) || eventsMap.get(date) == null) {
             Map<String, List<Event>> map = eventsAdapter.getDayEvents(date);
 
@@ -189,16 +185,17 @@ public class MainActivityAdapter extends ExpandableRecyclerAdapter<MainActivityA
                     i++;
                     double temp = 0;
                     try {
-                        if(e instanceof FoodFormEvent) {
+                        if (e instanceof FoodFormEvent) {
                             temp = Double.valueOf(e.getKcalBalance());
 
-                        }else if (e instanceof  ActivityFormEvent) {
+                        } else if (e instanceof ActivityFormEvent) {
                             temp = -Double.valueOf(e.getKcalBalance());
                         }
-                    } catch (Exception exc) {}
+                    } catch (Exception exc) {
+                    }
                     balance += temp;
                 }
-                if(balance != 0) {
+                if (balance != 0) {
                     list.get(headerPosition).setKcalAmount(String.valueOf(balance));
                     totalBalance += balance;
                 }
@@ -206,13 +203,13 @@ public class MainActivityAdapter extends ExpandableRecyclerAdapter<MainActivityA
             }
 
             String totalBalanceString = String.valueOf(totalBalance);
-            saveReachedKcal(date,totalBalanceString);
+            saveReachedKcal(date, totalBalanceString);
 
             eventsMap.put(date, list);
-            MainActivity.isChagnedMap.put(date,false);
+            MainActivity.isChagnedMap.put(date, false);
 //            Toast.makeText(mainActivity.getApplicationContext(),"pobieram " + date, Toast.LENGTH_SHORT).show();
             return list;
-        }else {
+        } else {
             selectedActualKcalValue.setText(dailyBalanceMap.get(date).getReachedKcal());
             selectedDayKcalLimitValue.setText(dailyBalanceMap.get(date).getKcalLimit());
             return eventsMap.get(date);
@@ -220,27 +217,28 @@ public class MainActivityAdapter extends ExpandableRecyclerAdapter<MainActivityA
 
     }
 
-    public void saveSelectedLimit (String date, String limit) {
-        if( !dailyBalanceMap.containsKey(date)) {
-            eventsAdapter.insertDailyBalance(new DailyBalance(date,limit));
-            dailyBalanceMap.put(date, new DailyBalance(date,limit));
+    public void saveSelectedLimit(String date, String limit) {
+        if (!dailyBalanceMap.containsKey(date)) {
+            eventsAdapter.insertDailyBalance(new DailyBalance(date, limit));
+            dailyBalanceMap.put(date, new DailyBalance(date, limit));
         } else {
             DailyBalance temp = dailyBalanceMap.get(date);
             temp.setKcalLimit(limit);
             eventsAdapter.updateDailyBalance(temp);
             dailyBalanceMap.get(date).setKcalLimit(limit);
         }
-        if(mainActivity.getCurrentDay().equals(mainActivity.getSelectedDate())) {
+        if (mainActivity.getCurrentDay().equals(mainActivity.getSelectedDate())) {
             mainActivity.kcalLimitToday.setText(limit);
             selectedDayKcalLimitValue.setText(limit);
         }
     }
-    public  void saveReachedKcal (String date, String reachedKcal) {
-        if( !dailyBalanceMap.containsKey(date)) {
-            DailyBalance temp = new DailyBalance(date,"");
+
+    public void saveReachedKcal(String date, String reachedKcal) {
+        if (!dailyBalanceMap.containsKey(date)) {
+            DailyBalance temp = new DailyBalance(date, "");
             temp.setReachedKcal(reachedKcal);
             eventsAdapter.insertDailyBalance(temp);
-            dailyBalanceMap.put(date,temp);
+            dailyBalanceMap.put(date, temp);
         } else {
             DailyBalance temp = dailyBalanceMap.get(date);
             temp.setReachedKcal(reachedKcal);
@@ -250,13 +248,14 @@ public class MainActivityAdapter extends ExpandableRecyclerAdapter<MainActivityA
 //            };
             dailyBalanceMap.get(date).setReachedKcal(reachedKcal);
         }
-        if(mainActivity.getCurrentDay().equals(mainActivity.getSelectedDate())) {
+        if (mainActivity.getCurrentDay().equals(mainActivity.getSelectedDate())) {
             mainActivity.reachedKcalToday.setText(reachedKcal);
             selectedActualKcalValue.setText(reachedKcal);
         }
     }
+
     public void updateDailyLimit(String date) {
-        if(dailyBalanceMap.containsKey(date)){
+        if (dailyBalanceMap.containsKey(date)) {
             selectedDayKcalLimitValue.setText(dailyBalanceMap.get(date).getKcalLimit());
             selectedActualKcalValue.setText(dailyBalanceMap.get(date).getReachedKcal());
         }
@@ -266,7 +265,7 @@ public class MainActivityAdapter extends ExpandableRecyclerAdapter<MainActivityA
 
     }
 
-   // public void get
+    // public void get
 //    private String getSelectedLimit(String date) {
 //        String temp = String.valueOf(selectedDayKcalLimitValue.getText());
 //        if(temp.isEmpty()) {

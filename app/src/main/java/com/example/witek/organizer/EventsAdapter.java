@@ -127,48 +127,52 @@ public class EventsAdapter {
             onCreate(db);
         }
     }
-    public EventsAdapter(Context context){
+
+    public EventsAdapter(Context context) {
         this.context = context;
     }
-    public EventsAdapter open(){
+
+    public EventsAdapter open() {
         dbHelper = new DatabaseHelper(context, DB_NAME, null, DB_VERSION);
-        try{
+        try {
             db = dbHelper.getWritableDatabase();
-        }catch(SQLException e){
+        } catch (SQLException e) {
             db = dbHelper.getReadableDatabase();
         }
         return this;
     }
-    public void close(){
+
+    public void close() {
         dbHelper.close();
     }
 
     //INSERT'Y
-    public long insertActivityFormEvent(ActivityFormEvent activityFormEvent){
+    public long insertActivityFormEvent(ActivityFormEvent activityFormEvent) {
         ContentValues newActivityFormEventValues = new ContentValues();
-        newActivityFormEventValues.put(KEY_NAME,activityFormEvent.getName());
-        newActivityFormEventValues.put(KEY_DATE,activityFormEvent.getDate());
-        newActivityFormEventValues.put(KEY_TIME,activityFormEvent.getTime());
-        newActivityFormEventValues.put(KEY_KCAL_PER_UNIT,activityFormEvent.getKcalPerUnit());
-        newActivityFormEventValues.put(KEY_BALANCE,activityFormEvent.getKcalBalance());
-        newActivityFormEventValues.put(KEY_DURATION,activityFormEvent.getDuration());
-        return db.insert(DB_EVENTS_TABLE,null,newActivityFormEventValues);
+        newActivityFormEventValues.put(KEY_NAME, activityFormEvent.getName());
+        newActivityFormEventValues.put(KEY_DATE, activityFormEvent.getDate());
+        newActivityFormEventValues.put(KEY_TIME, activityFormEvent.getTime());
+        newActivityFormEventValues.put(KEY_KCAL_PER_UNIT, activityFormEvent.getKcalPerUnit());
+        newActivityFormEventValues.put(KEY_BALANCE, activityFormEvent.getKcalBalance());
+        newActivityFormEventValues.put(KEY_DURATION, activityFormEvent.getDuration());
+        return db.insert(DB_EVENTS_TABLE, null, newActivityFormEventValues);
     }
+
     public long insertActivityFormEvent(String name, String date, String time, String kcalPerUnit,
-                                        String balance, String duration){
+                                        String balance, String duration) {
         ContentValues newActivityFormEventValues = new ContentValues();
-        newActivityFormEventValues.put(KEY_NAME,name);
-        newActivityFormEventValues.put(KEY_DATE,date);
-        newActivityFormEventValues.put(KEY_TIME,time);
-        newActivityFormEventValues.put(KEY_KCAL_PER_UNIT,kcalPerUnit);
-        newActivityFormEventValues.put(KEY_BALANCE,balance);
-        newActivityFormEventValues.put(KEY_DURATION,duration);
+        newActivityFormEventValues.put(KEY_NAME, name);
+        newActivityFormEventValues.put(KEY_DATE, date);
+        newActivityFormEventValues.put(KEY_TIME, time);
+        newActivityFormEventValues.put(KEY_KCAL_PER_UNIT, kcalPerUnit);
+        newActivityFormEventValues.put(KEY_BALANCE, balance);
+        newActivityFormEventValues.put(KEY_DURATION, duration);
 
 
-
-        return db.insert(DB_EVENTS_TABLE,null,newActivityFormEventValues);
+        return db.insert(DB_EVENTS_TABLE, null, newActivityFormEventValues);
     }
-    public long insertFoodFormEvent(FoodFormEvent foodFormEvent){
+
+    public long insertFoodFormEvent(FoodFormEvent foodFormEvent) {
         ContentValues newFoodFormEventValues = new ContentValues();
         newFoodFormEventValues.put(KEY_NAME, foodFormEvent.getName());
         newFoodFormEventValues.put(KEY_DATE, foodFormEvent.getDate());
@@ -178,8 +182,9 @@ public class EventsAdapter {
         newFoodFormEventValues.put(KEY_WEIGHT, foodFormEvent.getWeight());
         return db.insert(DB_EVENTS_TABLE, null, newFoodFormEventValues);
     }
+
     public long insertFoodFormEvent(String name, String date, String time, String kcalPerUnit,
-                                        String balance, String weight){
+                                    String balance, String weight) {
         ContentValues newFoodFormEventValues = new ContentValues();
         newFoodFormEventValues.put(KEY_NAME, name);
         newFoodFormEventValues.put(KEY_DATE, date);
@@ -197,6 +202,7 @@ public class EventsAdapter {
         newDailyBalanceValues.put(KEY_REACHED_KCAL, reachedKcal);
         return db.insert(DB_DAILY_BALANCE_TABLE, null, newDailyBalanceValues);
     }
+
     public long insertDailyBalance(DailyBalance dailyBalance) {
         ContentValues newDailyBalanceValues = new ContentValues();
         newDailyBalanceValues.put(KEY_KCAL_LIMIT, dailyBalance.getKcalLimit());
@@ -204,6 +210,7 @@ public class EventsAdapter {
         newDailyBalanceValues.put(KEY_REACHED_KCAL, dailyBalance.getReachedKcal());
         return db.insert(DB_DAILY_BALANCE_TABLE, null, newDailyBalanceValues);
     }
+
     //UPDATE'Y
     public boolean updateActivityFormEvent(ActivityFormEvent activityFormEvent) {
         long id = activityFormEvent.getId();
@@ -213,20 +220,20 @@ public class EventsAdapter {
         String kcalPerUnit = activityFormEvent.getKcalPerUnit();
         String kcalBalance = activityFormEvent.getKcalBalance();
         String duration = activityFormEvent.getDuration();
-        return updateActivityFormEvent(id,name,date,time,kcalPerUnit,kcalBalance,duration);
+        return updateActivityFormEvent(id, name, date, time, kcalPerUnit, kcalBalance, duration);
     }
 
-    public boolean updateActivityFormEvent(long id,String name,String date,String time, String kcalPerUnit,
-                                           String kcalBalance,String duration) {
+    public boolean updateActivityFormEvent(long id, String name, String date, String time, String kcalPerUnit,
+                                           String kcalBalance, String duration) {
         String where = KEY_ID + "=" + id;
         ContentValues updateActivityFormEvent = new ContentValues();
         updateActivityFormEvent.put(KEY_NAME, name);
         updateActivityFormEvent.put(KEY_DATE, date);
         updateActivityFormEvent.put(KEY_TIME, time);
-        updateActivityFormEvent.put(KEY_KCAL_PER_UNIT,kcalPerUnit);
-        updateActivityFormEvent.put(KEY_BALANCE,kcalBalance);
-        updateActivityFormEvent.put(KEY_DURATION,duration);
-        return db.update(DB_EVENTS_TABLE,updateActivityFormEvent,where,null) > 0;
+        updateActivityFormEvent.put(KEY_KCAL_PER_UNIT, kcalPerUnit);
+        updateActivityFormEvent.put(KEY_BALANCE, kcalBalance);
+        updateActivityFormEvent.put(KEY_DURATION, duration);
+        return db.update(DB_EVENTS_TABLE, updateActivityFormEvent, where, null) > 0;
     }
 
     public boolean updateFoodFormEvent(FoodFormEvent foodFormEvent) {
@@ -237,23 +244,23 @@ public class EventsAdapter {
         String kcalPerUnit = foodFormEvent.getKcalPerUnit();
         String kcalBalance = foodFormEvent.getKcalBalance();
         String weight = foodFormEvent.getWeight();
-        return updateFoodFormEvent(id,name,date,time,kcalPerUnit,kcalBalance,weight);
+        return updateFoodFormEvent(id, name, date, time, kcalPerUnit, kcalBalance, weight);
     }
 
-    public boolean updateFoodFormEvent(long id,String name,String date, String time, String kcalPerUnit,
-                                           String kcalBalance,String weight) {
+    public boolean updateFoodFormEvent(long id, String name, String date, String time, String kcalPerUnit,
+                                       String kcalBalance, String weight) {
         String where = KEY_ID + "=" + id;
         ContentValues updateFoodFormEvent = new ContentValues();
         updateFoodFormEvent.put(KEY_NAME, name);
         updateFoodFormEvent.put(KEY_DATE, date);
         updateFoodFormEvent.put(KEY_TIME, time);
-        updateFoodFormEvent.put(KEY_KCAL_PER_UNIT,kcalPerUnit);
-        updateFoodFormEvent.put(KEY_BALANCE,kcalBalance);
-        updateFoodFormEvent.put(KEY_WEIGHT,weight);
-        return db.update(DB_EVENTS_TABLE,updateFoodFormEvent,where,null) > 0;
+        updateFoodFormEvent.put(KEY_KCAL_PER_UNIT, kcalPerUnit);
+        updateFoodFormEvent.put(KEY_BALANCE, kcalBalance);
+        updateFoodFormEvent.put(KEY_WEIGHT, weight);
+        return db.update(DB_EVENTS_TABLE, updateFoodFormEvent, where, null) > 0;
     }
 
-//    public boolean updateDailyBalance(DailyBalance dailyBalance) {
+    //    public boolean updateDailyBalance(DailyBalance dailyBalance) {
 //        long id = dailyBalance.getId();
 //        String kcalLimit = dailyBalance.getKcalLimit();
 //        String date = dailyBalance.getDate();
@@ -276,22 +283,24 @@ public class EventsAdapter {
         updateDailyBalance.put(KEY_KCAL_LIMIT, dailyBalance.getKcalLimit());
 //        updateDailyBalance.put(KEY_DATE, dailyBalance.getDate());
         updateDailyBalance.put(KEY_REACHED_KCAL, dailyBalance.getReachedKcal());
-        return db.update(DB_DAILY_BALANCE_TABLE,updateDailyBalance,where,null) > 0;
+        return db.update(DB_DAILY_BALANCE_TABLE, updateDailyBalance, where, null) > 0;
 
     }
 
     //DELETE
     public boolean deleteEvent(long id) {
         String where = KEY_ID + "=" + id;
-        return db.delete(DB_EVENTS_TABLE,where,null) > 0;
+        return db.delete(DB_EVENTS_TABLE, where, null) > 0;
     }
+
     public boolean deleteDailyBalance(long id) {
         String where = KEY_ID + "=" + id;
-        return db.delete(DB_DAILY_BALANCE_TABLE,where,null) > 0;
+        return db.delete(DB_DAILY_BALANCE_TABLE, where, null) > 0;
     }
+
     //GETY
-    public Cursor getAllEvents(){
-        String[] colums = {KEY_ID,KEY_NAME,KEY_DATE,KEY_TIME,KEY_BALANCE,KEY_DURATION,KEY_WEIGHT};
+    public Cursor getAllEvents() {
+        String[] colums = {KEY_ID, KEY_NAME, KEY_DATE, KEY_TIME, KEY_BALANCE, KEY_DURATION, KEY_WEIGHT};
         return db.query(DB_EVENTS_TABLE, colums, null, null, null, null, null);
     }
 
@@ -317,32 +326,35 @@ public class EventsAdapter {
                     Event event = new ActivityFormEvent(name, kcalPerUnit, date, time, duration);
 
                     event.setId(id);
-                    map = dontWantToRepeat(time,event,map);
+                    map = dontWantToRepeat(time, event, map);
 
                 } else if (weight != null) {
                     Event event = new FoodFormEvent(name, kcalPerUnit, date, time, weight);
                     event.setId(id);
-                    map = dontWantToRepeat(time,event,map);
+                    map = dontWantToRepeat(time, event, map);
 
                 } else {
                     Event event = new Event(name, kcalPerUnit, date, time);
                     event.setId(id);
-                    map = dontWantToRepeat(time,event,map);
+                    map = dontWantToRepeat(time, event, map);
 
                 }
 
             } while (cursor.moveToNext());
+            cursor.close();
         }
-        Log.d(DEBUG_TAG,"download day events for " + day + " from database...");
+        Log.d(DEBUG_TAG, "download day events for " + day + " from database...");
+
         return map;
     }
-    private Map<String, List<Event>> dontWantToRepeat(String time, Event event, Map<String, List<Event>> map ) {
-        if(map.containsKey(time)) {
+
+    private Map<String, List<Event>> dontWantToRepeat(String time, Event event, Map<String, List<Event>> map) {
+        if (map.containsKey(time)) {
             map.get(time).add(event);
-        }else {
-            List<Event> list = new ArrayList();
+        } else {
+            List<Event> list = new ArrayList<>();
             list.add(event);
-            map.put(time,list);
+            map.put(time, list);
         }
         return map;
     }
@@ -360,34 +372,37 @@ public class EventsAdapter {
                 String date = cursor.getString(DATE_COLUMN);
                 String reachedKcal = cursor.getString(REACHED_KCAL_COLUMN);
 
-                    DailyBalance dailyBalance = new DailyBalance(date,kcalLimit);
-                    dailyBalance.setId(id);
-                    dailyBalance.setReachedKcal(reachedKcal);
-                    map.put(date,dailyBalance);
+                DailyBalance dailyBalance = new DailyBalance(date, kcalLimit);
+                dailyBalance.setId(id);
+                dailyBalance.setReachedKcal(reachedKcal);
+                map.put(date, dailyBalance);
             } while (cursor.moveToNext());
+            cursor.close();
         }
+
         return map;
     }
+
     public DailyBalance getDailyBalance(String day) {
         String[] colums = {KEY_ID, KEY_KCAL_LIMIT, KEY_DATE, KEY_REACHED_KCAL};
         String where = KEY_DATE + "='" + day + "'";
         Cursor cursor = db.query(DB_DAILY_BALANCE_TABLE, colums, where, null, null, null, null);
         if (cursor != null && cursor.moveToFirst()) {
-                long id = cursor.getLong(ID_COLUMN);
-                String kcalLimit = cursor.getString(KCAL_LIMIT_COLUMN);
-                String date = cursor.getString(DATE_COLUMN);
-                String reachedKcal = cursor.getString(REACHED_KCAL_COLUMN);
+            long id = cursor.getLong(ID_COLUMN);
+            String kcalLimit = cursor.getString(KCAL_LIMIT_COLUMN);
+            String date = cursor.getString(DATE_COLUMN);
+            String reachedKcal = cursor.getString(REACHED_KCAL_COLUMN);
 
-                DailyBalance dailyBalance = new DailyBalance(date,kcalLimit);
-                dailyBalance.setId(id);
-                dailyBalance.setReachedKcal(reachedKcal);
+            DailyBalance dailyBalance = new DailyBalance(date, kcalLimit);
+            dailyBalance.setId(id);
+            dailyBalance.setReachedKcal(reachedKcal);
+            cursor.close();
             return dailyBalance;
-            } else {
+        } else {
             return null;
         }
 
     }
-
 
 
 }

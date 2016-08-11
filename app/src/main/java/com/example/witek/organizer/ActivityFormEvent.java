@@ -8,16 +8,19 @@ import java.util.Locale;
  */
 public class ActivityFormEvent extends Event {
     private String duration;
-    public ActivityFormEvent(Event event,String duration) {
+
+    public ActivityFormEvent(Event event, String duration) {
         super(event);
         this.duration = duration;
         countBuriedKcal();
     }
-    public ActivityFormEvent(String name,String kcalPerUnit, String date ,String time,String duration) {
-        super(name,kcalPerUnit,date,time);
+
+    public ActivityFormEvent(String name, String kcalPerUnit, String date, String time, String duration) {
+        super(name, kcalPerUnit, date, time);
         this.duration = duration;
         countBuriedKcal();
     }
+
     public String getDuration() {
         return duration;
     }
@@ -26,15 +29,15 @@ public class ActivityFormEvent extends Event {
         this.duration = duration;
     }
 
-    public String countBuriedKcal(){
+    public String countBuriedKcal() {
         float counted;
-        try{
-            counted = Float.valueOf(duration)*Float.valueOf(getKcalPerUnit())/60;
+        try {
+            counted = Float.valueOf(duration) * Float.valueOf(getKcalPerUnit()) / 60;
             String result = String.valueOf(new Formatter(Locale.US).format("%.0f", counted));
             setKcalBalance(result);
             return result;
 
-        }catch (Exception exc){
+        } catch (Exception exc) {
             setKcalBalance("");
             return "";
         }
