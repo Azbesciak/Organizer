@@ -26,30 +26,37 @@ import java.util.List;
 /**
  * Created by Witek on 22.05.2016.
  */
-public class FoodFormEventAdapter extends RecyclerView.Adapter<FoodFormEventAdapter.FoodFormEventViewHolder>
-        implements SwipeableItemAdapter<FoodFormEventAdapter.FoodFormEventViewHolder>{
+public class FoodFormEventAdapter
+        extends RecyclerView.Adapter<FoodFormEventAdapter.FoodFormEventViewHolder>
+        implements SwipeableItemAdapter<FoodFormEventAdapter.FoodFormEventViewHolder> {
 
-    interface Swipeable extends SwipeableItemConstants {
-
-    }
     List<FoodFormEvent> adapter_list = new ArrayList<>();
     AddFoodFormEvent addFoodFormEvent;
-
-
     Context ctx;
-    public FoodFormEventAdapter(List<FoodFormEvent> adapter_list,Context ctx){
+
+
+    public FoodFormEventAdapter (List<FoodFormEvent> adapter_list, Context ctx) {
         setHasStableIds(true);
         this.adapter_list = adapter_list;
         this.ctx = ctx;
         addFoodFormEvent = (AddFoodFormEvent) ctx;
     }
+
     public long getItemId(int position) {
-        return adapter_list.get(position).getId(); // need to return stable (= not change even after position changed) value
+        return adapter_list.get(position)
+                           .getId(); // need to return stable (= not change even after position
+        // changed) value
+    }
+
+    interface Swipeable extends SwipeableItemConstants {
+
     }
 
     public FoodFormEventViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.food_form_event_card,parent,false);
-        FoodFormEventViewHolder foodFormEventViewHolder = new FoodFormEventViewHolder(view,addFoodFormEvent);
+        View view = LayoutInflater.from(parent.getContext())
+                                  .inflate(R.layout.food_form_event_card, parent, false);
+        FoodFormEventViewHolder foodFormEventViewHolder = new FoodFormEventViewHolder(view,
+                                                                                      addFoodFormEvent);
         return foodFormEventViewHolder;
     }
 
@@ -63,27 +70,31 @@ public class FoodFormEventAdapter extends RecyclerView.Adapter<FoodFormEventAdap
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int position=holder.getPosition();
-                if(position >= 0) {
+                int position = holder.getAdapterPosition();
+                if (position >= 0) {
                     adapter_list.remove(position);
                     notifyItemRemoved(position);
 
-                    if(adapter_list.size()==0)
+                    if (adapter_list.size() == 0) {
                         addFoodFormEvent.makeAddEventItemActive();
+                    }
                 }
             }
         });
-        class GenericTextWatcher implements TextWatcher{
+        class GenericTextWatcher implements TextWatcher {
             private View v;
+
             private GenericTextWatcher(View v) {
                 this.v = v;
             }
+
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             public void afterTextChanged(Editable editable) {
                 int position = holder.getAdapterPosition();
-                if(position >= 0 && position < adapter_list.size()) {
+                if (position >= 0 && position < adapter_list.size()) {
                     switch (v.getId()) {
                         case R.id.foodName: {
                             adapter_list.get(position).setName(
@@ -91,11 +102,10 @@ public class FoodFormEventAdapter extends RecyclerView.Adapter<FoodFormEventAdap
                             );
                             if (adapter_list.get(position).getName().isEmpty()) {
                                 addFoodFormEvent.addEventItem.setIcon(R.drawable.ic_add_inactive);
-                                addFoodFormEvent.isAddItemEventActive = false;
-                            }
-                            else {
+                                AddFoodFormEvent.isAddItemEventActive = false;
+                            } else {
                                 addFoodFormEvent.addEventItem.setIcon(R.drawable.ic_add_active);
-                                addFoodFormEvent.isAddItemEventActive = true;
+                                AddFoodFormEvent.isAddItemEventActive = true;
                             }
                             break;
                         }
@@ -132,7 +142,17 @@ public class FoodFormEventAdapter extends RecyclerView.Adapter<FoodFormEventAdap
         return adapter_list.size();
     }
 
-    public static class FoodFormEventViewHolder extends AbstractSwipeableItemViewHolder{
+    @Override
+    public SwipeResultAction onSwipeItem(FoodFormEventViewHolder holder, int position,
+                                         @SwipeableItemResults int result) {
+        if (result == Swipeable.RESULT_CANCELED) {
+            return new SwipeResultActionDefault();
+        } else {
+            return new MySwipeResultActionRemoveItem(this, position);
+        }
+    }
+
+    public static class FoodFormEventViewHolder extends AbstractSwipeableItemViewHolder {
         AddFoodFormEvent addFoodFormEvent;
         EditText foodName;
         EditText weight;
@@ -141,7 +161,7 @@ public class FoodFormEventAdapter extends RecyclerView.Adapter<FoodFormEventAdap
         ImageButton deleteButton;
         CardView cardView;
 
-        public FoodFormEventViewHolder(View itemView,AddFoodFormEvent addFoodFormEvent) {
+        public FoodFormEventViewHolder(View itemView, AddFoodFormEvent addFoodFormEvent) {
             super(itemView);
             foodName = (EditText) itemView.findViewById(R.id.foodName);
             weight = (EditText) itemView.findViewById(R.id.weight);
@@ -157,14 +177,6 @@ public class FoodFormEventAdapter extends RecyclerView.Adapter<FoodFormEventAdap
             return cardView;
         }
     }
-    @Override
-    public SwipeResultAction onSwipeItem(FoodFormEventViewHolder holder, int position, @SwipeableItemResults int result) {
-        if (result == Swipeable.RESULT_CANCELED) {
-            return new SwipeResultActionDefault();
-        } else {
-            return new MySwipeResultActionRemoveItem(this, position);
-        }
-    }
 
     @Override
     public int onGetSwipeReactionType(FoodFormEventViewHolder holder, int position, int x, int y) {
@@ -172,7 +184,8 @@ public class FoodFormEventAdapter extends RecyclerView.Adapter<FoodFormEventAdap
     }
 
     @Override
-    public void onSetSwipeBackground(FoodFormEventViewHolder holder, int position, @SwipeableItemDrawableTypes int type) {
+    public void onSetSwipeBackground(FoodFormEventViewHolder holder, int position,
+                                     @SwipeableItemDrawableTypes int type) {
     }
 
     static class MySwipeResultActionRemoveItem extends SwipeResultActionRemoveItem {
@@ -186,12 +199,13 @@ public class FoodFormEventAdapter extends RecyclerView.Adapter<FoodFormEventAdap
 
         @Override
         protected void onPerformAction() {
-            if(position >= 0){
+            if (position >= 0) {
                 adapter.adapter_list.remove(position);
                 adapter.notifyItemRemoved(position);
             }
-            if(adapter.adapter_list.size()==0)
+            if (adapter.adapter_list.size() == 0) {
                 adapter.addFoodFormEvent.makeAddEventItemActive();
+            }
         }
 
     }

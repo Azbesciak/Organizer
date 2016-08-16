@@ -26,30 +26,37 @@ import java.util.List;
 /**
  * Created by Witek on 22.05.2016.
  */
-public class ActivityFormEventAdapter extends RecyclerView.Adapter<ActivityFormEventAdapter.ActivityFormEventViewHolder>
-                                        implements SwipeableItemAdapter<ActivityFormEventAdapter.ActivityFormEventViewHolder>{
+public class ActivityFormEventAdapter
+        extends RecyclerView.Adapter<ActivityFormEventAdapter.ActivityFormEventViewHolder>
+        implements SwipeableItemAdapter<ActivityFormEventAdapter.ActivityFormEventViewHolder> {
 
-    interface Swipeable extends SwipeableItemConstants {
+    interface Swipeable extends SwipeableItemConstants {}
 
-    }
     List<ActivityFormEvent> adapter_list = new ArrayList<>();
     AddActivityFormEvent addActivityFormEvent;
 
 
     Context ctx;
-    public ActivityFormEventAdapter(List<ActivityFormEvent> adapter_list,Context ctx){
+
+    public ActivityFormEventAdapter (List<ActivityFormEvent> adapter_list, Context ctx) {
         setHasStableIds(true);
         this.adapter_list = adapter_list;
         this.ctx = ctx;
         addActivityFormEvent = (AddActivityFormEvent) ctx;
     }
-    public long getItemId(int position) {
-        return adapter_list.get(position).getId(); // need to return stable (= not change even after position changed) value
+
+    public long getItemId (int position) {
+        return adapter_list.get(position)
+                           .getId();
+        // need to return stable (= not change even after position
+        // changed) value
     }
 
     public ActivityFormEventViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_form_event_card,parent,false);
-        ActivityFormEventViewHolder activityFormEventViewHolder = new ActivityFormEventViewHolder(view,addActivityFormEvent);
+        View view = LayoutInflater.from(parent.getContext())
+                                  .inflate(R.layout.activity_form_event_card, parent, false);
+        ActivityFormEventViewHolder activityFormEventViewHolder = new ActivityFormEventViewHolder(
+                view, addActivityFormEvent);
         return activityFormEventViewHolder;
     }
 
@@ -63,39 +70,43 @@ public class ActivityFormEventAdapter extends RecyclerView.Adapter<ActivityFormE
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int position=holder.getPosition();
-                if(position >= 0) {
+                int position = holder.getAdapterPosition();
+                if (position >= 0) {
                     adapter_list.remove(position);
                     notifyItemRemoved(position);
 
-                    if(adapter_list.size()==0)
+                    if (adapter_list.size() == 0) {
                         addActivityFormEvent.makeAddEventItemActive();
+                    }
                 }
             }
         });
-        class GenericTextWatcher implements TextWatcher{
+        class GenericTextWatcher implements TextWatcher {
             private View v;
+
             private GenericTextWatcher(View v) {
                 this.v = v;
             }
+
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             public void afterTextChanged(Editable editable) {
                 int position = holder.getAdapterPosition();
-                if(position >= 0 && position < adapter_list.size()) {
+                if (position >= 0 && position < adapter_list.size()) {
                     switch (v.getId()) {
                         case R.id.activityName: {
                             adapter_list.get(position).setName(
                                     String.valueOf(holder.activityName.getText())
                             );
                             if (adapter_list.get(position).getName().isEmpty()) {
-                                addActivityFormEvent.addEventItem.setIcon(R.drawable.ic_add_inactive);
-                                addActivityFormEvent.isAddItemEventActive = false;
-                            }
-                            else {
+                                addActivityFormEvent.addEventItem
+                                        .setIcon(R.drawable.ic_add_inactive);
+                                AddActivityFormEvent.isAddItemEventActive = false;
+                            } else {
                                 addActivityFormEvent.addEventItem.setIcon(R.drawable.ic_add_active);
-                                addActivityFormEvent.isAddItemEventActive = true;
+                                AddActivityFormEvent.isAddItemEventActive = true;
                             }
                             break;
                         }
@@ -121,7 +132,8 @@ public class ActivityFormEventAdapter extends RecyclerView.Adapter<ActivityFormE
             }
         }
         holder.activityName.addTextChangedListener(new GenericTextWatcher(holder.activityName));
-        holder.burnedKcalPerHour.addTextChangedListener(new GenericTextWatcher(holder.burnedKcalPerHour));
+        holder.burnedKcalPerHour
+                .addTextChangedListener(new GenericTextWatcher(holder.burnedKcalPerHour));
         holder.duration.addTextChangedListener(new GenericTextWatcher(holder.duration));
         holder.burnedKcal.addTextChangedListener(new GenericTextWatcher(holder.burnedKcal));
 
@@ -132,7 +144,7 @@ public class ActivityFormEventAdapter extends RecyclerView.Adapter<ActivityFormE
         return adapter_list.size();
     }
 
-    public static class ActivityFormEventViewHolder extends AbstractSwipeableItemViewHolder{
+    public static class ActivityFormEventViewHolder extends AbstractSwipeableItemViewHolder {
         AddActivityFormEvent addActivityFormEvent;
         EditText activityName;
         EditText duration;
@@ -141,7 +153,8 @@ public class ActivityFormEventAdapter extends RecyclerView.Adapter<ActivityFormE
         ImageButton deleteButton;
         CardView cardView;
 
-        public ActivityFormEventViewHolder(View itemView,AddActivityFormEvent addActivityFormEvent) {
+        public ActivityFormEventViewHolder(View itemView,
+                                           AddActivityFormEvent addActivityFormEvent) {
             super(itemView);
             activityName = (EditText) itemView.findViewById(R.id.activityName);
             duration = (EditText) itemView.findViewById(R.id.duration);
@@ -157,8 +170,11 @@ public class ActivityFormEventAdapter extends RecyclerView.Adapter<ActivityFormE
             return cardView;
         }
     }
+
     @Override
-    public SwipeResultAction onSwipeItem(ActivityFormEventViewHolder holder, int position, @SwipeableItemResults int result) {
+    public SwipeResultAction onSwipeItem(ActivityFormEventViewHolder holder, int position,
+                                         @SwipeableItemResults
+                                         int result) {
         if (result == Swipeable.RESULT_CANCELED) {
             return new SwipeResultActionDefault();
         } else {
@@ -167,34 +183,38 @@ public class ActivityFormEventAdapter extends RecyclerView.Adapter<ActivityFormE
     }
 
     @Override
-    public int onGetSwipeReactionType(ActivityFormEventViewHolder holder, int position, int x, int y) {
+    public int onGetSwipeReactionType(ActivityFormEventViewHolder holder, int position, int x,
+                                      int y) {
         return Swipeable.REACTION_CAN_SWIPE_BOTH_H;
     }
 
     @Override
-    public void onSetSwipeBackground(ActivityFormEventViewHolder holder, int position, @SwipeableItemDrawableTypes int type) {
+    public void onSetSwipeBackground(ActivityFormEventViewHolder holder, int position,
+                                     @SwipeableItemDrawableTypes
+                                     int type) {
     }
 
     static class MySwipeResultActionRemoveItem extends SwipeResultActionRemoveItem {
         private ActivityFormEventAdapter adapter;
         private int position;
 
-        public MySwipeResultActionRemoveItem(ActivityFormEventAdapter adapter, int position) {
+        public MySwipeResultActionRemoveItem (ActivityFormEventAdapter adapter, int position) {
             this.adapter = adapter;
             this.position = position;
         }
 
         @Override
         protected void onPerformAction() {
-            if(position >= 0){
+            if (position >= 0) {
                 adapter.adapter_list.remove(position);
                 adapter.notifyItemRemoved(position);
             }
-            if(adapter.adapter_list.size()==0)
+            if (adapter.adapter_list.size() == 0) {
                 adapter.addActivityFormEvent.makeAddEventItemActive();
+            }
         }
 
-        }
     }
+}
 
 

@@ -4,18 +4,18 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -34,30 +34,55 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    static MainActivityAdapter adapter;
+    static Map<String, Boolean> isChagnedMap = new HashMap<>();
+    private static FloatingActionMenu menuRed;
+    private final Handler handler = new Handler();
+    EditText reachedKcalToday;
+    EditText kcalLimitToday;
+    View headerView;
+    int recyclerViewState;
     private CalendarView calendarView;
     private String selectedDate;
     private String currentDay;
-    private static FloatingActionMenu menuRed;
     private Handler mUiHandler = new Handler();
     private com.github.clans.fab.FloatingActionButton fab1;
     private com.github.clans.fab.FloatingActionButton fab2;
     private EventsAdapter eventsAdapter;
     private RecyclerView recycler;
-    static MainActivityAdapter adapter;
-    static Map<String, Boolean> isChagnedMap = new HashMap<>();
     private SimpleDateFormat dateFormat;
     private SimpleDateFormat timeFormat;
     private Date currentDayDate;
-    EditText reachedKcalToday;
-    EditText kcalLimitToday;
-    View headerView;
-    int recyclerViewState;
-
     private Toolbar toolbar;
     private ActionBarDrawerToggle toggle;
     private DrawerLayout drawer;
     private NavigationView navigationView;
-    private final Handler handler = new Handler();
+    private View.OnClickListener clickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.fab1: {
+                    Intent intent = new Intent(v.getContext(), AddActivityFormEvent.class);
+
+                    intent.putExtra("date", selectedDate);
+                    intent.putExtra("time", timeFormat.format(System.currentTimeMillis()));
+                    startActivity(intent);
+                    break;
+                }
+                case R.id.fab2: {
+                    Intent intent = new Intent(v.getContext(), AddFoodFormEvent.class);
+                    intent.putExtra("date", selectedDate);
+                    intent.putExtra("time", timeFormat.format(System.currentTimeMillis()));
+                    startActivity(intent);
+                    break;
+                }
+            }
+        }
+    };
+
+    public static void closeFab() {
+        menuRed.close(false);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,13 +95,13 @@ public class MainActivity extends AppCompatActivity
         initializeCalendarWidget();
     }
 
-
     private void initializeNavigationDrawer() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
         navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -162,7 +187,8 @@ public class MainActivity extends AppCompatActivity
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (menuRed.isMenuButtonHidden() && recyclerViewState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (menuRed.isMenuButtonHidden() && recyclerViewState == RecyclerView
+                            .SCROLL_STATE_IDLE) {
                         menuRed.showMenuButton(true);
                     } else {
                         displayFab(handler);
@@ -178,8 +204,10 @@ public class MainActivity extends AppCompatActivity
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
 
             @Override
-            public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
-                adapter.saveSelectedLimit(selectedDate, adapter.selectedDayKcalLimitValue.getText().toString());
+            public void onSelectedDayChange(CalendarView view, int year, int month,
+                                            int dayOfMonth) {
+                adapter.saveSelectedLimit(selectedDate,
+                                          adapter.selectedDayKcalLimitValue.getText().toString());
                 Date dateTemp = new Date(year - 1900, month, dayOfMonth);
                 selectedDate = dateFormat.format(dateTemp);
                 updateListViewColor(dateTemp);
@@ -192,30 +220,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
-
-    private View.OnClickListener clickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.fab1: {
-                    Intent intent = new Intent(v.getContext(), AddActivityFormEvent.class);
-
-                    intent.putExtra("date", selectedDate);
-                    intent.putExtra("time", timeFormat.format(System.currentTimeMillis()));
-                    startActivity(intent);
-                    break;
-                }
-                case R.id.fab2: {
-                    Intent intent = new Intent(v.getContext(), AddFoodFormEvent.class);
-                    intent.putExtra("date", selectedDate);
-                    intent.putExtra("time", timeFormat.format(System.currentTimeMillis()));
-                    startActivity(intent);
-                    break;
-                }
-            }
-        }
-    };
-
 
     public void updateListViewColor(Date dateTemp) {
         DailyBalance dailyBalance = adapter.dailyBalanceMap.get(selectedDate);
@@ -264,7 +268,8 @@ public class MainActivity extends AppCompatActivity
         } else if (currentDayDate.after(dateTemp)) {
             changeColorMaker(limit, reachedKcal);
         } else {
-            adapter.summaryLabel.setBackgroundColor(getResources().getColor(R.color.cardview_light_background));
+            adapter.summaryLabel
+                    .setBackgroundColor(getResources().getColor(R.color.cardview_light_background));
 
         }
     }
@@ -292,7 +297,6 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-
     public String getSelectedDate() {
         return selectedDate;
     }
@@ -306,7 +310,8 @@ public class MainActivity extends AppCompatActivity
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
                 String result = data.getStringExtra("result");
-                Toast.makeText(getApplicationContext(), "nie dodano " + result + " wartosci", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "nie dodano " + result + " wartosci",
+                               Toast.LENGTH_SHORT).show();
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 Toast.makeText(getApplicationContext(), "cancel", Toast.LENGTH_SHORT).show();
@@ -373,10 +378,6 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public static void closeFab() {
-        menuRed.close(false);
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -391,7 +392,9 @@ public class MainActivity extends AppCompatActivity
         fab1 = null;
         fab2.destroyDrawingCache();
         fab2 = null;
+        eventsAdapter.close();
         eventsAdapter = null;
+        recycler.clearOnScrollListeners();
         recycler.destroyDrawingCache();
         recycler = null;
         adapter = null;
@@ -404,7 +407,6 @@ public class MainActivity extends AppCompatActivity
         kcalLimitToday = null;
         headerView.destroyDrawingCache();
         headerView = null;
-
         toolbar.destroyDrawingCache();
         toolbar = null;
         toggle = null;

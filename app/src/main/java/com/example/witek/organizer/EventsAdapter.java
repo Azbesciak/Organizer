@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -18,77 +17,60 @@ import java.util.TreeMap;
  * Created by Witek on 26.05.2016.
  */
 public class EventsAdapter {
-    private static final String DEBUG_TAG = "SqLiteEventsManager";
-
-    private static final int DB_VERSION = 1;
-    private static final String DB_NAME = "database.db";
-
-
-    private static final String DB_EVENTS_TABLE = "events";
-
     public static final String KEY_ID = "_id";
     public static final String ID_OPTIONS = "INTEGER PRIMARY KEY AUTOINCREMENT";
     public static final int ID_COLUMN = 0;
-
     public static final String KEY_NAME = "name";
     public static final String NAME_OPTIONS = "TEXT NOT NULL";
     public static final int NAME_COLUMN = 1;
-
     public static final String KEY_DATE = "date";
     public static final String DATE_OPTIONS = "TEXT NOT NULL";
     public static final int DATE_COLUMN = 2;
-
     public static final String KEY_TIME = "time";
     public static final String TIME_OPTIONS = "TEXT_NOT_NULL";
     public static final int TIME_COLUMN = 3;
-
     public static final String KEY_KCAL_PER_UNIT = "kcalPerUnit";
     public static final String KCAL_PER_UNIT_OPTIONS = "TEXT";
     public static final int KCAL_PER_UNIT_COLUMN = 4;
-
     public static final String KEY_BALANCE = "balance";
     public static final String BALANCE_OPTIONS = "TEXT";
     public static final int BALANCE_COLUMN = 5;
-
     public static final String KEY_WEIGHT = "weight";
     public static final String WEIGHT_OPTIONS = "TEXT";
     public static final int WEIGHT_COLUMN = 6;
-
     public static final String KEY_DURATION = "duration";
     public static final String DURATION_OPTIONS = "TEXT";
     public static final int DURATION_COLUMN = 7;
-
-    private static final String DB_CREATE_EVENTS_TABLE =
-            "CREATE TABLE " + DB_EVENTS_TABLE + "( " +
-                    KEY_ID + " " + ID_OPTIONS + ", " +
-                    KEY_NAME + " " + NAME_OPTIONS + ", " +
-                    KEY_DATE + " " + DATE_OPTIONS + ", " +
-                    KEY_TIME + " " + TIME_OPTIONS + ", " +
-                    KEY_KCAL_PER_UNIT + " " + KCAL_PER_UNIT_OPTIONS + ", " +
-                    KEY_BALANCE + " " + BALANCE_OPTIONS + ", " +
-                    KEY_WEIGHT + " " + WEIGHT_OPTIONS + ", " +
-                    KEY_DURATION + " " + DURATION_OPTIONS + ");";
-
-    private static final String DROP_EVENTS_TABLE =
-            "DROP TABLE IF EXISTS " + DB_EVENTS_TABLE;
-
-    //BALANCE TABLE
-    private static final String DB_DAILY_BALANCE_TABLE = "dailyBalance";
-
     public static final String KEY_KCAL_LIMIT = "kcalLimit";
     public static final String KCAL_LIMIT_OPTIONS = "TEXT";
     public static final int KCAL_LIMIT_COLUMN = 1;
-
     public static final String KEY_REACHED_KCAL = "reachedKcal";
     public static final String REACHED_KCAL_OPTIONS = "TEXT";
     public static final int REACHED_KCAL_COLUMN = 3;
-
+    private static final String DEBUG_TAG = "SqLiteEventsManager";
+    private static final int DB_VERSION = 1;
+    private static final String DB_NAME = "database.db";
+    private static final String DB_EVENTS_TABLE = "events";
+    private static final String DB_CREATE_EVENTS_TABLE =
+            "CREATE TABLE " + DB_EVENTS_TABLE + "( " +
+            KEY_ID + " " + ID_OPTIONS + ", " +
+            KEY_NAME + " " + NAME_OPTIONS + ", " +
+            KEY_DATE + " " + DATE_OPTIONS + ", " +
+            KEY_TIME + " " + TIME_OPTIONS + ", " +
+            KEY_KCAL_PER_UNIT + " " + KCAL_PER_UNIT_OPTIONS + ", " +
+            KEY_BALANCE + " " + BALANCE_OPTIONS + ", " +
+            KEY_WEIGHT + " " + WEIGHT_OPTIONS + ", " +
+            KEY_DURATION + " " + DURATION_OPTIONS + ");";
+    private static final String DROP_EVENTS_TABLE =
+            "DROP TABLE IF EXISTS " + DB_EVENTS_TABLE;
+    //BALANCE TABLE
+    private static final String DB_DAILY_BALANCE_TABLE = "dailyBalance";
     private static final String DB_CREATE_DAILY_BALANCE_TABLE =
             "CREATE TABLE " + DB_DAILY_BALANCE_TABLE + "( " +
-                    KEY_ID + " " + ID_OPTIONS + ", " +
-                    KEY_KCAL_LIMIT + " " + KCAL_LIMIT_OPTIONS + ", " +
-                    KEY_DATE + " " + DATE_OPTIONS + ", " +
-                    KEY_REACHED_KCAL + " " + REACHED_KCAL_OPTIONS + ");";
+            KEY_ID + " " + ID_OPTIONS + ", " +
+            KEY_KCAL_LIMIT + " " + KCAL_LIMIT_OPTIONS + ", " +
+            KEY_DATE + " " + DATE_OPTIONS + ", " +
+            KEY_REACHED_KCAL + " " + REACHED_KCAL_OPTIONS + ");";
 
     private static final String DROP_DAILY_BALANCE_TABLE =
             "DROP TABLE IF EXISTS " + DB_DAILY_BALANCE_TABLE;
@@ -96,37 +78,6 @@ public class EventsAdapter {
     private SQLiteDatabase db;
     private Context context;
     private DatabaseHelper dbHelper;
-
-    private static class DatabaseHelper extends SQLiteOpenHelper {
-
-
-        public DatabaseHelper(Context context, String name,
-                              SQLiteDatabase.CursorFactory factory, int version) {
-            super(context, name, factory, version);
-        }
-
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-            db.execSQL(DB_CREATE_EVENTS_TABLE);
-            db.execSQL(DB_CREATE_DAILY_BALANCE_TABLE);
-            Log.d(DEBUG_TAG, "Database creating . . .");
-            Log.d(DEBUG_TAG, "Table " + DB_EVENTS_TABLE + " ver." + DB_VERSION + " created");
-            Log.d(DEBUG_TAG, "Table " + DB_CREATE_DAILY_BALANCE_TABLE + " ver." + DB_VERSION + " created");
-
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            db.execSQL(DROP_EVENTS_TABLE);
-            db.execSQL(DB_CREATE_DAILY_BALANCE_TABLE);
-            Log.d(DEBUG_TAG, "Database updating . . . ");
-            Log.d(DEBUG_TAG, "Table " + DB_EVENTS_TABLE + " updated from ver." + oldVersion + " to ver." + newVersion);
-            Log.d(DEBUG_TAG, "Table " + DB_CREATE_DAILY_BALANCE_TABLE + " updated from ver." + oldVersion + " to ver." + newVersion);
-            Log.d(DEBUG_TAG, "All data is lost");
-
-            onCreate(db);
-        }
-    }
 
     public EventsAdapter(Context context) {
         this.context = context;
@@ -223,7 +174,8 @@ public class EventsAdapter {
         return updateActivityFormEvent(id, name, date, time, kcalPerUnit, kcalBalance, duration);
     }
 
-    public boolean updateActivityFormEvent(long id, String name, String date, String time, String kcalPerUnit,
+    public boolean updateActivityFormEvent(long id, String name, String date, String time,
+                                           String kcalPerUnit,
                                            String kcalBalance, String duration) {
         String where = KEY_ID + "=" + id;
         ContentValues updateActivityFormEvent = new ContentValues();
@@ -247,7 +199,8 @@ public class EventsAdapter {
         return updateFoodFormEvent(id, name, date, time, kcalPerUnit, kcalBalance, weight);
     }
 
-    public boolean updateFoodFormEvent(long id, String name, String date, String time, String kcalPerUnit,
+    public boolean updateFoodFormEvent(long id, String name, String date, String time,
+                                       String kcalPerUnit,
                                        String kcalBalance, String weight) {
         String where = KEY_ID + "=" + id;
         ContentValues updateFoodFormEvent = new ContentValues();
@@ -268,7 +221,8 @@ public class EventsAdapter {
 //        return updateDailyBalance(id,kcalLimit,date,reachedKcal);
 //    }
 //
-//    public boolean updateDailyBalance(long id, String kcalLimit, String date, String reachedKcal) {
+//    public boolean updateDailyBalance(long id, String kcalLimit, String date, String
+// reachedKcal) {
 //        String where = KEY_ID + "=" + id;
 //        ContentValues updateDailyBalance = new ContentValues();
 //        updateDailyBalance.put(KEY_KCAL_LIMIT, kcalLimit);
@@ -300,12 +254,14 @@ public class EventsAdapter {
 
     //GETY
     public Cursor getAllEvents() {
-        String[] colums = {KEY_ID, KEY_NAME, KEY_DATE, KEY_TIME, KEY_BALANCE, KEY_DURATION, KEY_WEIGHT};
+        String[] colums = {KEY_ID, KEY_NAME, KEY_DATE, KEY_TIME, KEY_BALANCE, KEY_DURATION,
+                           KEY_WEIGHT};
         return db.query(DB_EVENTS_TABLE, colums, null, null, null, null, null);
     }
 
     public Map<String, List<Event>> getDayEvents(String day) {
-        String[] colums = {KEY_ID, KEY_NAME, KEY_DATE, KEY_TIME, KEY_KCAL_PER_UNIT, KEY_BALANCE, KEY_WEIGHT, KEY_DURATION};
+        String[] colums = {KEY_ID, KEY_NAME, KEY_DATE, KEY_TIME, KEY_KCAL_PER_UNIT, KEY_BALANCE,
+                           KEY_WEIGHT, KEY_DURATION};
         String where = KEY_DATE + "='" + day + "'";
         Cursor cursor = db.query(DB_EVENTS_TABLE, colums, where, null, null, null, null);
         Map<String, List<Event>> map = new TreeMap<>();
@@ -340,7 +296,8 @@ public class EventsAdapter {
 
                 }
 
-            } while (cursor.moveToNext());
+            }
+            while (cursor.moveToNext());
             cursor.close();
         }
         Log.d(DEBUG_TAG, "download day events for " + day + " from database...");
@@ -348,7 +305,8 @@ public class EventsAdapter {
         return map;
     }
 
-    private Map<String, List<Event>> dontWantToRepeat(String time, Event event, Map<String, List<Event>> map) {
+    private Map<String, List<Event>> dontWantToRepeat(String time, Event event,
+                                                      Map<String, List<Event>> map) {
         if (map.containsKey(time)) {
             map.get(time).add(event);
         } else {
@@ -376,7 +334,8 @@ public class EventsAdapter {
                 dailyBalance.setId(id);
                 dailyBalance.setReachedKcal(reachedKcal);
                 map.put(date, dailyBalance);
-            } while (cursor.moveToNext());
+            }
+            while (cursor.moveToNext());
             cursor.close();
         }
 
@@ -402,6 +361,42 @@ public class EventsAdapter {
             return null;
         }
 
+    }
+
+    private static class DatabaseHelper extends SQLiteOpenHelper {
+
+
+        public DatabaseHelper(Context context, String name,
+                              SQLiteDatabase.CursorFactory factory, int version) {
+            super(context, name, factory, version);
+        }
+
+        @Override
+        public void onCreate(SQLiteDatabase db) {
+            db.execSQL(DB_CREATE_EVENTS_TABLE);
+            db.execSQL(DB_CREATE_DAILY_BALANCE_TABLE);
+            Log.d(DEBUG_TAG, "Database creating . . .");
+            Log.d(DEBUG_TAG, "Table " + DB_EVENTS_TABLE + " ver." + DB_VERSION + " created");
+            Log.d(DEBUG_TAG,
+                  "Table " + DB_CREATE_DAILY_BALANCE_TABLE + " ver." + DB_VERSION + " created");
+
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            db.execSQL(DROP_EVENTS_TABLE);
+            db.execSQL(DB_CREATE_DAILY_BALANCE_TABLE);
+            Log.d(DEBUG_TAG, "Database updating . . . ");
+            Log.d(DEBUG_TAG,
+                  "Table " + DB_EVENTS_TABLE + " updated from ver." + oldVersion + " to ver." +
+                  newVersion);
+            Log.d(DEBUG_TAG,
+                  "Table " + DB_CREATE_DAILY_BALANCE_TABLE + " updated from ver." + oldVersion +
+                  " to ver." + newVersion);
+            Log.d(DEBUG_TAG, "All data is lost");
+
+            onCreate(db);
+        }
     }
 
 

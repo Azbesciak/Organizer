@@ -50,10 +50,10 @@ public class DailyBalance {
     @Override
     public String toString() {
         return "DailyBalance{" +
-                "id= " + id +
-                ", kcalLimit= '" + kcalLimit + '\'' +
-                ", reachedKcal= '" + reachedKcal + '\'' +
-                ", date= " + date + '\'' +
-                '}';
+               "id= " + id +
+               ", kcalLimit= '" + kcalLimit + '\'' +
+               ", reachedKcal= '" + reachedKcal + '\'' +
+               ", date= " + date + '\'' +
+               '}';
     }
 }

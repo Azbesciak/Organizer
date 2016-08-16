@@ -15,7 +15,8 @@ public class ActivityFormEvent extends Event {
         countBuriedKcal();
     }
 
-    public ActivityFormEvent(String name, String kcalPerUnit, String date, String time, String duration) {
+    public ActivityFormEvent(String name, String kcalPerUnit, String date, String time,
+                             String duration) {
         super(name, kcalPerUnit, date, time);
         this.duration = duration;
         countBuriedKcal();
@@ -46,7 +47,7 @@ public class ActivityFormEvent extends Event {
     @Override
     public String toString() {
         return "ActivityFormEvent{" + super.toString() +
-                ", duration='" + duration + '\'' +
-                '}';
+               ", duration='" + duration + '\'' +
+               '}';
     }
 }

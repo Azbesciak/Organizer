@@ -3,15 +3,14 @@ package com.example.witek.organizer;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -58,7 +57,8 @@ public class AddActivityFormEvent extends AppCompatActivity {
             time = timeText.getText() + "";
 
         } catch (NullPointerException exc) {
-            Toast.makeText(getApplicationContext(), "Wystąpił błąd: " + exc.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Wystąpił błąd: " + exc.getMessage(),
+                           Toast.LENGTH_SHORT).show();
         }
         recyclerView = (RecyclerView) findViewById(R.id.activityRecyclerView);
         layoutManager = new LinearLayoutManager(this);
@@ -70,7 +70,8 @@ public class AddActivityFormEvent extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(false);
         for (int i = 0; i < 1; i++) {
-            ActivityFormEvent activityFormEvent = new ActivityFormEvent(new Event("", "", getDate(), getTime()), "");
+            ActivityFormEvent activityFormEvent = new ActivityFormEvent(
+                    new Event("", "", getDate(), getTime()), "");
             activityFormEvent.setId(++id);
             events.add(activityFormEvent);
         }
@@ -118,14 +119,16 @@ public class AddActivityFormEvent extends AppCompatActivity {
     public void onAddEventButtonClick(MenuItem item) {
         addEventItem = item;
         if (isAddItemEventActive) {
-            ActivityFormEvent activityFormEvent = new ActivityFormEvent(new Event("", "", getDate(), getTime()), "");
+            ActivityFormEvent activityFormEvent = new ActivityFormEvent(
+                    new Event("", "", getDate(), getTime()), "");
             activityFormEvent.setId(++id);
             events.add(activityFormEvent);
             adapter.notifyItemInserted(events.size() - 1);
             layoutManager.scrollToPosition(events.size() - 1);
             makeAddEventItemInactive();
         } else {
-            Toast.makeText(getApplicationContext(), "Zanim dodasz nową aktywność\nuzupełnij pola", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Zanim dodasz nową aktywność\nuzupełnij pola",
+                           Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -139,51 +142,9 @@ public class AddActivityFormEvent extends AppCompatActivity {
         addEventItem.setIcon(R.drawable.ic_add_inactive);
     }
 
-
-    public static class TimePickerFragment extends DialogFragment
-            implements TimePickerDialog.OnTimeSetListener {
-
-        @NonNull
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-            final Calendar c = Calendar.getInstance();
-            int hour = c.get(Calendar.HOUR_OF_DAY);
-            int minute = c.get(Calendar.MINUTE);
-            TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), this, hour, minute,
-                    DateFormat.is24HourFormat(getActivity()));
-            return timePickerDialog;
-        }
-
-        public void onTimeSet(TimePicker view, int hour, int minute) {
-            timeText.setText(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date(0, 0, 0, hour, minute)));
-            time = timeText.getText() + "";
-        }
-    }
-
     public void showDatePickerDialog(View v) {
         DialogFragment newFragment = new DatePickerFragment();
         newFragment.show(getSupportFragmentManager(), "datePicker");
-    }
-
-    public static class DatePickerFragment extends DialogFragment
-            implements DatePickerDialog.OnDateSetListener {
-
-        @NonNull
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
-            return new DatePickerDialog(getActivity(), this, year, month, day);
-        }
-
-        public void onDateSet(DatePicker view, int year, int month, int day) {
-            dataText.setText(new SimpleDateFormat("E, dd MMMM yyyy",Locale.getDefault()).format(new Date(year - 1900, month, day)));
-            date = dataText.getText() + "";
-        }
     }
 
     public String getDate() {
@@ -213,6 +174,52 @@ public class AddActivityFormEvent extends AppCompatActivity {
 
         finish();
 
+    }
+
+    public static class TimePickerFragment extends DialogFragment
+            implements TimePickerDialog.OnTimeSetListener {
+
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+            final Calendar c = Calendar.getInstance();
+            int hour = c.get(Calendar.HOUR_OF_DAY);
+            int minute = c.get(Calendar.MINUTE);
+            TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), this, hour,
+                                                                     minute,
+                                                                     DateFormat.is24HourFormat(
+                                                                             getActivity()));
+            return timePickerDialog;
+        }
+
+        public void onTimeSet(TimePicker view, int hour, int minute) {
+            timeText.setText(new SimpleDateFormat("HH:mm", Locale.getDefault())
+                                     .format(new Date(0, 0, 0, hour, minute)));
+            time = timeText.getText() + "";
+        }
+    }
+
+    public static class DatePickerFragment extends DialogFragment
+            implements DatePickerDialog.OnDateSetListener {
+
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+            final Calendar c = Calendar.getInstance();
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+            int day = c.get(Calendar.DAY_OF_MONTH);
+            return new DatePickerDialog(getActivity(), this, year, month, day);
+        }
+
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+            dataText.setText(new SimpleDateFormat("E, dd MMMM yyyy",
+                                                  Locale.getDefault())
+                                     .format(new Date(year - 1900, month, day)));
+            date = dataText.getText() + "";
+        }
     }
 
 

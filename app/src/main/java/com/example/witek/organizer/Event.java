@@ -10,13 +10,15 @@ public class Event {
     private String kcalBalance;
     private String date;
     private String time;
-    public Event(Event event){
+
+    public Event(Event event) {
         name = event.getName();
         kcalPerUnit = event.getKcalPerUnit();
         kcalBalance = event.getKcalBalance();
         id = 0;
     }
-    public Event(String name,String kcalPerUnit, String date, String time){
+
+    public Event(String name, String kcalPerUnit, String date, String time) {
         this.name = name;
         this.kcalPerUnit = kcalPerUnit;
         this.date = date;
@@ -24,6 +26,7 @@ public class Event {
         kcalBalance = "";
         id = 0;
     }
+
     public String getName() {
         return name;
     }
@@ -51,21 +54,21 @@ public class Event {
     @Override
     public String toString() {
         return "Event{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", kcalPerUnit='" + kcalPerUnit + '\'' +
-                ", kcalBalance='" + kcalBalance + '\'' +
-                ", date='" + date + '\'' +
-                ", time='" + time + '\'' +
-                '}';
-    }
-
-    public void setId(long id) {
-        this.id = id;
+               "id=" + id +
+               ", name='" + name + '\'' +
+               ", kcalPerUnit='" + kcalPerUnit + '\'' +
+               ", kcalBalance='" + kcalBalance + '\'' +
+               ", date='" + date + '\'' +
+               ", time='" + time + '\'' +
+               '}';
     }
 
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getDate() {
